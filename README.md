@@ -6,7 +6,7 @@ Site publicado em: https://nicoly-rsousa.github.io/trabalho-Devops-portfolio/
 
 Pipeline CI/CD
 CI (.github/workflows/ci.yml): roda em todo Pull Request para a main. Verifica o index.html, executa o linter (Node 18 e 20), bloqueia arquivos acima de 500KB, procura termos proibidos e valida links e imagens.
-CD (.github/workflows/deploy.yml): a cada push na main, publica o site no GitHub Pages e avisa no Discord se falhar.
+- **CD** (`.github/workflows/deploy.yml`): a cada push na `main`, publica o site no GitHub Pages. Se o deploy falhar, o GitHub envia um e-mail automático de notificação.
 
 ## Desenvolvimento
 
