@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  verificar-index:
+    name: Verificar index.html
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checar existencia do index.html
+        run: |
+          if [ ! -f index.html ]; then
+            echo "::error::index.html nao encontrado na raiz do projeto"
+            exit 1
+          fi
+          echo "index.html encontrado"
+
+  lint:
+    name: Linter (Node ${{ matrix.node-version }})
+    needs: verificar-index
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Rodar Linter
+        run: npm run lint
+
+  qualidade:
+    name: Qualidade do codigo
+    needs: verificar-index
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bloquear arquivos maiores que 500KB
+        run: |
+          grandes=$(find . -type f -size +500k -not -path "./.git/*" -not -path "./node_modules/*")
+          if [ -n "$grandes" ]; then
+            echo "::error::Arquivos acima de 500KB:"
+            echo "$grandes"
+            exit 1
+          fi
+          echo "Nenhum arquivo acima de 500KB"
+
+      - name: Varredura de termos proibidos
+        run: |
+          if grep -rnwE "TODO|FIXME" \
+              --include="*.html" --include="*.css" --include="*.js" \
+              --exclude-dir=node_modules --exclude-dir=.git . \
+            || grep -rniwE "senha|password" \
+              --include="*.html" --include="*.css" --include="*.js" \
+              --exclude-dir=node_modules --exclude-dir=.git . ; then
+            echo "::error::Termos proibidos encontrados (TODO, FIXME, senha, password)"
+            exit 1
+          fi
+          echo "Nenhum termo proibido encontrado"
+
+      - name: Validar links e imagens
+        run: bash scripts/check-links.sh

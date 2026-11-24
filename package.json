@@ -1,0 +1,12 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portfolio profissional de Nicoly Rodrigues",
+  "scripts": {
+    "lint": "html-validate index.html"
+  },
+  "devDependencies": {
+    "html-validate": "^8.0.0"
+  }
+}
