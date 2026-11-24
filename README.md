@@ -2,7 +2,7 @@
 
 Portfólio Profissional - Nicoly Rodrigues
 
-Site publicado em: https://nicoly-rsousa.github.io/portfolio/
+Site publicado em: https://nicoly-rsousa.github.io/trabalho-Devops-portfolio/
 
 Pipeline CI/CD
 CI (.github/workflows/ci.yml): roda em todo Pull Request para a main. Verifica o index.html, executa o linter (Node 18 e 20), bloqueia arquivos acima de 500KB, procura termos proibidos e valida links e imagens.
